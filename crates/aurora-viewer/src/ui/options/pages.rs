@@ -37,6 +37,8 @@ pub fn tabs(page: Page) -> Vec<&'static str> {
             aurora_i18n::tr!("common-windows"),
             aurora_i18n::tr!("ui-options-tab-world-and-interface"),
             aurora_i18n::tr!("common-behavior"),
+            // HyperGrid Explorer: what this fork is and where it comes from
+            aurora_i18n::tr!("ui-options-tab-about"),
         ],
         Page::Graphics => vec![
             aurora_i18n::tr!("ui-options-quality"),

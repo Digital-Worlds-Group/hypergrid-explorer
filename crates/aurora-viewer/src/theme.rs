@@ -1,5 +1,5 @@
-//! Customisable egui theme. Defaults follow the Aurora brand palette
-//! (subtle glass, violet/indigo accents on navy). Users can override any color in
+//! Customisable egui theme. Defaults follow HyperGrid Explorer's approved
+//! palette (cyan accents on midnight navy), on Aurora Viewer's glass look. Users can override any color in
 //! `theme.json` in the config directory.
 
 use egui::{Color32, CornerRadius, Stroke, Visuals};
@@ -36,31 +36,35 @@ pub struct Theme {
 }
 
 impl Default for Theme {
-    /// Brand colors from `scripts/aurora/brand.psd1`; window surfaces follow
-    /// the shared hierarchy documented in `docs/BRANDING.md`.
+    /// HyperGrid Explorer's approved theme (branding package v2.0,
+    /// `assets/branding/hypergrid-explorer-theme/colors.json`) on Aurora's
+    /// colour slots. The slot names stay Aurora's (`violet` is the accent) so
+    /// that upstream code keeps working. Values marked "derived" are shades of
+    /// the package's colours for slots the package does not name.
     fn default() -> Self {
         Theme {
-            violet: "#8B5CF6".into(),
-            indigo: "#4F46E5".into(),
-            teal: "#5EEAD4".into(),
-            navy: "#070B1F".into(),
-            panel: "#252830".into(),
-            bar: "#1B1E26".into(),
-            field: "#181B23".into(),
-            raised: "#363B47".into(),
-            violet_light: "#A78BFA".into(),
-            violet_pale: "#C4B5FD".into(),
-            ink: "#E8EDFB".into(),
-            muted: "#9AA6C6".into(),
-            muted_dim: "#6F7BA0".into(),
-            amber: "#FCD34D".into(),
-            rose: "#F472B6".into(),
-            danger: "#F87171".into(),
-            success: "#4ADE80".into(),
-            warn: "#FB923C".into(),
-            danger_dim: "#A85252".into(),
-            indigo_light: "#818CF8".into(),
-            on_accent: "#FFFFFF".into(),
+            violet: "#26D9F2".into(),       // primaryAccent
+            indigo: "#1489B8".into(),       // accentDeep
+            teal: "#3BC9DB".into(),         // derived: cyan-teal between primaryAccent and success (links)
+            navy: "#071827".into(),         // background (midnight navy)
+            panel: "#101923".into(),        // panel
+            bar: "#0C141D".into(),          // derived: between background and panel
+            field: "#0A121B".into(),        // derived: below panel
+            raised: "#1D2B3A".into(),       // panelElevated
+            violet_light: "#6BE6F7".into(), // derived: lighter primaryAccent
+            violet_pale: "#C8D9E6".into(),  // metallicText
+            ink: "#EAF1F7".into(),          // primaryText
+            muted: "#AAB8C6".into(),        // secondaryText
+            muted_dim: "#7D8B99".into(),    // derived: dimmer secondaryText
+            amber: "#F3BD55".into(),        // warning
+            rose: "#F472B6".into(),         // Aurora's (content colour, not in the package)
+            danger: "#F47777".into(),       // error
+            success: "#20BFA9".into(),      // success
+            warn: "#F3BD55".into(),         // warning
+            danger_dim: "#A04E4E".into(),   // derived: darker error
+            indigo_light: "#4FB3D9".into(), // derived: between accentDeep and primaryAccent
+            // text on a cyan face: midnight navy (about 11:1), not white (about 1.7:1)
+            on_accent: "#071827".into(),
             panel_alpha: 230,
             button_radius: 5,
             window_radius: 3,

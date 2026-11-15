@@ -1,4 +1,33 @@
-# Notices — Aurora Viewer
+# Notices — HyperGrid Explorer
+
+## HyperGrid Explorer
+
+HyperGrid Explorer is a **modified version of Aurora Viewer**, maintained by
+Terry Ford (terryf43080@outlook.com). It has been modified since 2026-11-15
+(GPLv3 section 5(a)); the Git history of this repository records each change
+and its date. Like Aurora Viewer, it is free software under the **GNU General
+Public License, version 3 or (at your option) any later version** (see
+[LICENSE](LICENSE)).
+
+HyperGrid Explorer is not provided, endorsed or supported by the Aurora Viewer
+team. "Aurora Viewer" and the Aurora wolf logo are the Aurora Viewer project's
+marks ([TRADEMARKS.md](TRADEMARKS.md)): HyperGrid Explorer uses its own name,
+logo and icon, and only says that it is based on Aurora Viewer.
+
+The HyperGrid Explorer name, horizontal logo, application icon and colour
+theme (`assets/branding/hypergrid-explorer*`, approved branding package v2.0)
+are Terry Ford's brand. Their files are distributed with this source; the
+licence of the code grants no right to them as marks.
+
+HyperGrid Explorer was forked from Aurora Viewer 0.9.10-beta.20261115.1 + 17
+commits (Aurora commit `03a8b9d15a7824ddd2bb22afeb26af28141eb36d`,
+2026-11-15). With thanks to the Aurora Viewer team and contributors, whose work
+HyperGrid Explorer is built on.
+
+Every notice of Aurora Viewer below is kept as Aurora Viewer wrote it, as
+section 4 of the GPLv3 requires.
+
+## Aurora Viewer notices
 
 Copyright © 2026 the Aurora Viewer contributors (the authors in the project's
 Git history).

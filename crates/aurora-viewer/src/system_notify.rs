@@ -105,7 +105,7 @@ fn run(rx: Receiver<Toast>, _clicks: Sender<u64>) {
 #[cfg(any(windows, target_os = "linux"))]
 fn icon_file() -> Option<std::path::PathBuf> {
     let dir = crate::settings::cache_dir();
-    let name = format!("notification-icon-{}.png", crate::app::LOGO_PNG.len());
+    let name = format!("notification-icon-{}.png", crate::app::ICON_PNG.len());
     let path = dir.join(&name);
     if path.exists() {
         return Some(path);
@@ -120,7 +120,7 @@ fn icon_file() -> Option<std::path::PathBuf> {
             }
         }
     }
-    let img = match image::load_from_memory(crate::app::LOGO_PNG) {
+    let img = match image::load_from_memory(crate::app::ICON_PNG) {
         Ok(img) => img.resize(256, 256, image::imageops::FilterType::Triangle),
         Err(e) => {
             log::warn!("system notifications: logo not decoded ({e})");
@@ -316,7 +316,7 @@ mod win {
     use windows::core::{HSTRING, IInspectable, PCWSTR, Ref};
 
     /// The application's identity for Windows' notifications.
-    const AUMID: &str = "Aurora.Viewer";
+    const AUMID: &str = aurora_version::brand::APP_USER_MODEL_ID;
     /// Notifications kept alive for their click handler.
     const KEEP: usize = 32;
 

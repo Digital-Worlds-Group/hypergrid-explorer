@@ -10,7 +10,14 @@ pub const ISSUES: &str = "https://github.com/Aurora-Viewer/Aurora-Viewer/issues"
 const API: &str = "https://api.github.com/repos/Aurora-Viewer/Aurora-Viewer/issues";
 pub const VERIFY: &str = "https://github.com/login/device";
 // Public identifier, supplied by the project's GitHub App registration.
-pub const CLIENT_ID: &str = "Iv23liT7PLWClMLztI1W";
+// HyperGrid Explorer: empty (reports not sent) while the fork has no
+// repository of its own (`brand::GITHUB_REPO`); Aurora Viewer's App and
+// tracker are not ours. Set the App and the addresses above when it has one.
+pub const CLIENT_ID: &str = if aurora_version::brand::GITHUB_REPO.is_some() {
+    "Iv23liT7PLWClMLztI1W"
+} else {
+    ""
+};
 
 pub struct BrowserDraft {
     pub url: String,
@@ -18,6 +25,13 @@ pub struct BrowserDraft {
 }
 
 pub fn browser_draft(title: &str, body: &str) -> BrowserDraft {
+    if aurora_version::brand::GITHUB_REPO.is_none() {
+        // no tracker of our own yet: the website, with the body to paste
+        return BrowserDraft {
+            url: aurora_version::brand::WEBSITE.to_owned(),
+            paste_body: true,
+        };
+    }
     let mut url = reqwest::Url::parse(&format!("{ISSUES}/new")).expect("constant project URL");
     url.query_pairs_mut()
         .append_pair("template", "bug_report.md")

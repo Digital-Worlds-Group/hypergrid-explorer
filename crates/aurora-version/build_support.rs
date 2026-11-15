@@ -8,8 +8,15 @@ pub struct BuildVersion {
     pub login: String,
 }
 
+/// HyperGrid Explorer's release tags: `hge-v<semver>`. Aurora Viewer's own
+/// `v<semver>` tags (fetched with upstream merges) are never read, so the fork
+/// keeps its own version numbers.
+pub const TAG_PREFIX: &str = "hge-v";
+
 fn release_version(tag: &str) -> Result<Version, String> {
-    let number = tag.strip_prefix('v').ok_or_else(|| "a release tag must start with v".to_owned())?;
+    let number = tag
+        .strip_prefix(TAG_PREFIX)
+        .ok_or_else(|| format!("a release tag must start with {TAG_PREFIX}"))?;
     Version::parse(number).map_err(|error| format!("invalid release tag {tag:?}: {error}"))
 }
 

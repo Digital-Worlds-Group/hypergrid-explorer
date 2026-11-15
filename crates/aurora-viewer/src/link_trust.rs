@@ -95,6 +95,8 @@ const TRUSTED: &[&str] = &[
     // the project's official domain; the former auroraviewer.com is no
     // longer trusted (once released, anyone could own it)
     "aurora-viewer.org",
+    // HyperGrid Explorer's own domain
+    "hypergridexplorer.com",
     // OpenSimulator
     "opensimulator.org",
     "osgrid.org",

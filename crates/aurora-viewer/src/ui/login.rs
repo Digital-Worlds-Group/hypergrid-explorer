@@ -725,14 +725,25 @@ pub fn show(
         .show(&ctx, |ui| {
             ui.set_width(card_w);
             ui.vertical_centered(|ui| {
-                if let Some(l) = logo {
-                    let r = ui.add(egui::Image::new(l).fit_to_exact_size(Vec2::splat(logo_size))).rect;
-                    // soft light behind the logo (additive)
-                    let painter = ctx.layer_painter(egui::LayerId::new(egui::Order::Background, egui::Id::unique("halo")));
-                    super::aurora_bg::radial_glow(&painter, r.center(), 150.0, p.violet, 0.42);
+                // HyperGrid Explorer: the approved horizontal logo carries the
+                // name, fitted whole (contain) in the room of Aurora's square
+                // logo and its title line
+                match logo {
+                    Some(l) => {
+                        let room = Vec2::new(card_w, logo_size + 40.0);
+                        // the logo melts into the sky on a pool of its own colour
+                        let pool = ui.painter().add(egui::Shape::Noop);
+                        let r = ui.add(egui::Image::new(l).fit_to_exact_size(room)).rect;
+                        ui.painter().set(pool, super::aurora_bg::logo_pool_shape(r, r.height() * 0.45));
+                        // soft light behind the logo (additive)
+                        let painter = ctx.layer_painter(egui::LayerId::new(egui::Order::Background, egui::Id::unique("halo")));
+                        super::aurora_bg::radial_glow(&painter, r.center(), r.width() * 0.45, p.violet, 0.42);
+                    }
+                    None => {
+                        ui.add_space(2.0);
+                        ui.label(RichText::new(aurora_version::brand::NAME).size(34.0).strong().color(p.ink));
+                    }
                 }
-                ui.add_space(2.0);
-                ui.label(RichText::new("Aurora Viewer").size(34.0).strong().color(p.ink));
                 ui.label(RichText::new(client_tagline()).size(13.0).color(p.violet_pale));
                 ui.add_space(18.0);
             });

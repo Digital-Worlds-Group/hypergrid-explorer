@@ -208,14 +208,25 @@ pub fn derive(skin: Palette, colors: &InterfaceColors) -> (Palette, Adjusted) {
 }
 
 /// Text on the accent: the skin's while it reads at least as well as on
-/// the skin's own accent (up to 4.5:1), else the better of it and navy.
+/// the skin's own accent (up to 4.5:1), else the better of it and the other
+/// end: navy under a light skin text (Aurora's white). Under a dark skin
+/// text (HyperGrid Explorer's navy on cyan) the other end is white or black,
+/// whichever reads better: one of them always reaches 4.5:1, which the
+/// skin's navy and a slightly grey white cannot on mid-tone blue accents.
 fn on_accent(skin: &Palette, accent: Color32) -> Color32 {
     let need = TEXT.min(contrast(skin.on_accent, skin.violet));
-    let light = contrast(skin.on_accent, accent);
-    if light >= need || light >= contrast(skin.navy, accent) {
+    let own = contrast(skin.on_accent, accent);
+    let other = if contrast(skin.on_accent, skin.navy) >= UI {
+        skin.navy
+    } else if contrast(Color32::WHITE, accent) >= contrast(Color32::BLACK, accent) {
+        Color32::WHITE
+    } else {
+        Color32::BLACK
+    };
+    if own >= need || own >= contrast(other, accent) {
         skin.on_accent
     } else {
-        skin.navy
+        other
     }
 }
 

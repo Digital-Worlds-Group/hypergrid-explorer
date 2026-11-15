@@ -1,0 +1,13 @@
+:root {
+  --hge-background: #071827;
+  --hge-panel: #101923;
+  --hge-panelElevated: #1D2B3A;
+  --hge-primaryAccent: #26D9F2;
+  --hge-accentDeep: #1489B8;
+  --hge-metallicText: #C8D9E6;
+  --hge-primaryText: #EAF1F7;
+  --hge-secondaryText: #AAB8C6;
+  --hge-success: #20BFA9;
+  --hge-warning: #F3BD55;
+  --hge-error: #F47777;
+}

@@ -2251,7 +2251,10 @@ pub fn top_bars(
                 ui.style_mut().visuals.button_frame = false;
                 // Aurora menu (white wolf): Me, Communicate, World, Build, Contents, Advanced, Help
                 if let Some(t) = icons.get("wolf") {
-                    let img = egui::Image::new(t).fit_to_exact_size(Vec2::new(18.0, 18.0)).tint(p.ink);
+                    // HyperGrid Explorer's application icon keeps its own colours
+                    let img = egui::Image::new(t)
+                        .fit_to_exact_size(Vec2::new(20.0, 20.0))
+                        .tint(crate::ui::widgets::PICTURE_TINT);
                     menu::button(ui, p, egui::Button::image(img), |ui| {
                         menu::searchable(ui, p, |ui| main_menus(ui, p, panels, st, &mut action, true));
                     })

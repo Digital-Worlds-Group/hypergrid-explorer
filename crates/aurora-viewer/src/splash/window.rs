@@ -21,7 +21,9 @@ use winit::{
 
 /// The window's size, in points.
 const SIZE: Vec2 = Vec2::new(420.0, 236.0);
-const LOGO: f32 = 56.0;
+/// HyperGrid Explorer: the room of the approved horizontal logo, which
+/// carries the name; fitted whole (contain), on the midnight-navy background.
+const LOGO: Vec2 = Vec2::new(330.0, 110.0);
 const BAR: f32 = 300.0;
 
 /// What the reader thread hands the window.
@@ -64,6 +66,7 @@ pub fn run() -> anyhow::Result<()> {
         window: None,
         input: None,
         background: None,
+        background_picture: false,
         last_pixels: Vec::new(),
         logo: None,
         step: forced.unwrap_or(Step::Starting),
@@ -110,6 +113,9 @@ struct Splash {
     input: Option<egui_winit::State>,
     /// The card under the content, painted once for a size.
     background: Option<([usize; 2], Vec<u32>)>,
+    /// Whether `background` was drawn with HyperGrid Explorer's picture (it
+    /// decodes in the background: the first frames have the drawn sky).
+    background_picture: bool,
     /// The last frame, for `AURORA_SPLASH_CAPTURE`.
     last_pixels: Vec<u32>,
     logo: Option<egui::TextureHandle>,
@@ -157,10 +163,17 @@ impl Splash {
 
     fn logo(&mut self) -> Option<egui::TextureHandle> {
         if self.logo.is_none() {
-            let pixels = (LOGO * self.context.pixels_per_point() * 2.0).round() as u32;
+            let pixels = LOGO * self.context.pixels_per_point() * 2.0;
             match image::load_from_memory(crate::app::LOGO_PNG) {
                 Ok(img) => {
-                    let img = img.resize(pixels, pixels, image::imageops::FilterType::Triangle).to_rgba8();
+                    // `resize` keeps the aspect ratio
+                    let img = img
+                        .resize(
+                            pixels.x.round() as u32,
+                            pixels.y.round() as u32,
+                            image::imageops::FilterType::Triangle,
+                        )
+                        .to_rgba8();
                     let ci = egui::ColorImage::from_rgba_unmultiplied([img.width() as usize, img.height() as usize], img.as_raw());
                     self.logo = Some(self.context.load_texture("splash-logo", ci, egui::TextureOptions::LINEAR));
                 }
@@ -174,16 +187,26 @@ impl Splash {
         let p = self.palette;
         let fraction = self.bar.advance(self.step);
         let logo = self.logo();
+        // the background picture is uploaded in this frame's textures
+        crate::ui::aurora_bg::prepare(ui.ctx());
         egui::CentralPanel::default().frame(egui::Frame::NONE).show(ui, |ui| {
-            ui.add_space(26.0);
+            ui.add_space(14.0);
             ui.vertical_centered(|ui| {
-                if let Some(logo) = &logo {
-                    ui.add(egui::Image::new(logo).fit_to_exact_size(Vec2::splat(LOGO)));
+                match &logo {
+                    Some(logo) => {
+                        // the logo melts into the gradient on a pool of its own colour
+                        let pool = ui.painter().add(egui::Shape::Noop);
+                        let r = ui.add(egui::Image::new(logo).fit_to_exact_size(LOGO)).rect;
+                        ui.painter().set(pool, crate::ui::aurora_bg::logo_pool_shape(r, 34.0));
+                    }
+                    None => {
+                        ui.add_space(8.0);
+                        ui.label(RichText::new(aurora_version::brand::NAME).size(19.0).strong().color(p.ink));
+                    }
                 }
-                ui.add_space(8.0);
-                ui.label(RichText::new("Aurora Viewer").size(19.0).strong().color(p.ink));
+                ui.add_space(4.0);
                 ui.label(RichText::new(&self.version).size(11.0).color(p.muted_dim));
-                ui.add_space(18.0);
+                ui.add_space(16.0);
                 ui.allocate_ui(Vec2::new(BAR, 30.0), |ui| {
                     let text = format!("{{}} · {}", self.step.status());
                     widgets::progress(ui, &p, "splash", fraction, BAR, &text, None);
@@ -209,7 +232,9 @@ impl Splash {
         let primitives = context.tessellate(output.shapes, ppp);
         let dims = [size.width as usize, size.height as usize];
         self.painter.update_textures(&output.textures_delta);
-        if self.background.as_ref().is_none_or(|(d, _)| *d != dims) {
+        let picture = crate::ui::aurora_bg::picture_ready();
+        if self.background.as_ref().is_none_or(|(d, _)| *d != dims) || self.background_picture != picture {
+            self.background_picture = picture;
             let rect = egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(dims[0] as f32, dims[1] as f32) / ppp);
             let clipped = context.tessellate(background(&self.palette, &context, rect), ppp);
             let mut pixels = vec![0; dims[0] * dims[1]];
@@ -267,25 +292,27 @@ impl Splash {
 /// border of the overlays. Painted once: the sky stands still here.
 fn background(p: &Palette, ctx: &egui::Context, rect: egui::Rect) -> Vec<egui::epaint::ClippedShape> {
     use crate::ui::aurora_bg;
+    // HyperGrid Explorer: cyan light from the top left, the deep blue accent
+    // from the bottom right, on midnight navy
     let lights = vec![
         aurora_bg::radial_glow_shape(
-            rect.left_top() + Vec2::new(rect.width() * 0.18, rect.height() * 0.12),
-            rect.width() * 0.95,
+            rect.left_top() + Vec2::new(rect.width() * 0.12, rect.height() * 0.1),
+            rect.width() * 0.9,
             p.violet,
-            0.24,
+            0.26,
         ),
         aurora_bg::radial_glow_shape(
-            rect.right_bottom() - Vec2::new(rect.width() * 0.12, rect.height() * 0.14),
-            rect.width() * 0.8,
-            p.teal,
-            0.13,
+            rect.right_bottom() - Vec2::new(rect.width() * 0.1, rect.height() * 0.1),
+            rect.width() * 0.85,
+            p.indigo,
+            0.34,
         ),
     ];
     // the moment of the sky the login screen opens on
     let mut shapes = aurora_bg::frosted_pane(p, rect, 12.0, rect, lights);
     shapes.push(crate::ui::login::strip(
         egui::Rect::from_min_size(rect.min, Vec2::new(rect.width(), 2.0)),
-        &[(0.0, p.violet), (1.0, p.teal)],
+        &[(0.0, p.violet), (1.0, p.indigo)],
     ));
     let stroke = widgets::overlay_frame(ctx, p).stroke;
     let corners = ctx.global_style().visuals.window_corner_radius;

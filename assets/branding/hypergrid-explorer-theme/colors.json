@@ -1,0 +1,17 @@
+{
+  "name": "HyperGrid Explorer",
+  "version": "2.0",
+  "colors": {
+    "background": "#071827",
+    "panel": "#101923",
+    "panelElevated": "#1D2B3A",
+    "primaryAccent": "#26D9F2",
+    "accentDeep": "#1489B8",
+    "metallicText": "#C8D9E6",
+    "primaryText": "#EAF1F7",
+    "secondaryText": "#AAB8C6",
+    "success": "#20BFA9",
+    "warning": "#F3BD55",
+    "error": "#F47777"
+  }
+}

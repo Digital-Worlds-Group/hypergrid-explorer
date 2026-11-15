@@ -434,6 +434,14 @@ pub fn page(cx: &mut Cx, tab: usize) {
                 );
             });
         }
+        // HyperGrid Explorer: the About tab (what this fork is, which Aurora
+        // Viewer it started from, who maintains it, thanks to Aurora's team)
+        3 => cx.group(&tr!("about-fork-title", name = aurora_version::brand::NAME), |cx| {
+            for line in crate::ui::about::fork_lines() {
+                cx.note(&line);
+            }
+            cx.note(&tr!("about-fork-notices", upstream = aurora_version::brand::UPSTREAM));
+        }),
         _ => {
             cx.group(tr!("ui-options-aurora-building"), |cx| {
                 cx.wide().choice(

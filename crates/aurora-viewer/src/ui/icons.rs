@@ -500,11 +500,17 @@ const FILLED: &[(&str, &[u8])] = svg_list!(
     "zoom-scan",
 );
 
-/// Brand SVGs (white wolf silhouette of assets/branding/), drawn untinted or tinted.
-const BRAND_SVGS: &[(&str, &[u8])] = &[("wolf", include_bytes!("../../../../assets/branding/aurora-logo-white.svg"))];
+/// Brand SVGs, drawn untinted or tinted. HyperGrid Explorer: none (Aurora's
+/// wolf is Aurora Viewer's mark; its "wolf" slot is the PNG below).
+const BRAND_SVGS: &[(&str, &[u8])] = &[];
 
-/// Raster images kept as PNG (brand logo).
-const PNGS: &[(&str, &[u8])] = &[("phoenix_18", include_bytes!("../../assets/icons/phoenix_18.png"))];
+/// Raster images kept as PNG (brand logo). "wolf" keeps Aurora's name for the
+/// main menu's brand slot: HyperGrid Explorer's approved application icon
+/// (64 px derivative), drawn with its own colours.
+const PNGS: &[(&str, &[u8])] = &[
+    ("phoenix_18", include_bytes!("../../assets/icons/phoenix_18.png")),
+    ("wolf", include_bytes!("../../../../assets/branding/hypergrid-explorer-icon-64.png")),
+];
 
 /// Firestorm icon names used by skins / layouts -> Tabler icon.
 const ALIASES: &[(&str, &str)] = &[

@@ -92,8 +92,9 @@ fn monochrome_keeps_the_lightness() {
 fn the_meaningful_colours_part_for_every_deficiency() {
     let base = Theme::default().palette_for(Vision::OFF);
     // the problem of #418: online green and do-not-disturb red look alike
-    // to a deuteranope
-    assert!(seen_apart(base.success, base.danger, Deficiency::Deutan) < 12.0);
+    // to a deuteranope with Aurora Viewer's palette. HyperGrid Explorer's
+    // (teal success, coral error) already parts them; the adapted palettes
+    // below must still part every meaningful pair.
     for d in [Deficiency::Protan, Deficiency::Deutan, Deficiency::Tritan, Deficiency::Mono] {
         let p = palette(base, full(d));
         let least = if d == Deficiency::Mono { 10.0 } else { 20.0 };

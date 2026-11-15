@@ -1915,9 +1915,9 @@ impl Default for ColorSettings {
             tag_friend: hex(0x818CF8),
             tag_muted: hex(0x6F7BA0),
             tag_linden: hex(0xF472B6),
-            tag_match: hex(0xE8EDFB),
-            tag_mismatch: hex(0xE8EDFB),
-            map_me: hex(0x8B5CF6),
+            tag_match: hex(0xEAF1F7),
+            tag_mismatch: hex(0xEAF1F7),
+            map_me: hex(0x26D9F2),
             map_other: hex(0x4ADE80),
             map_friend: hex(0x818CF8),
             map_linden: hex(0xF472B6),
@@ -1929,25 +1929,25 @@ impl Default for ColorSettings {
             map_whisper: hex(0x6CC24A),
             map_say: hex(0x6CC24A),
             map_shout: hex(0xE0661A),
-            chat_mine: hex(0x9AA6C6),
-            chat_others: hex(0xE8EDFB),
+            chat_mine: hex(0xAAB8C6),
+            chat_others: hex(0xEAF1F7),
             chat_objects: hex(0x4ADE80),
             chat_friends: hex(0x818CF8),
             chat_linden: hex(0xF472B6),
             chat_muted: hex(0x6F7BA0),
-            chat_system: hex(0x9AA6C6),
-            chat_errors: hex(0xF87171),
+            chat_system: hex(0xAAB8C6),
+            chat_errors: hex(0xF47777),
             chat_object_im: hex(0xA78BFA),
             chat_owner: hex(0xFCD34D),
-            chat_urls: hex(0x5EEAD4),
+            chat_urls: hex(0x26D9F2),
             // every clickable link of a text (web, place, avatar, group)
-            // shares the brand teal
-            chat_slurl: hex(0x5EEAD4),
+            // shares the brand cyan (HyperGrid Explorer primaryAccent)
+            chat_slurl: hex(0x26D9F2),
             chat_direct: hex(0xFB923C),
             sender_avatar: hex(0xC4B5FD),
             sender_object: hex(0x4ADE80),
             mention_text: hex(0xFCD34D),
-            mention_residents: hex(0x8B5CF6),
+            mention_residents: hex(0x26D9F2),
             mention_me: hex(0x4F46E5),
         }
     }
@@ -2700,9 +2700,13 @@ pub fn config_dir() -> PathBuf {
 
 /// The settings folder before the demo's subfolder.
 pub(crate) fn default_config_root() -> PathBuf {
-    directories::ProjectDirs::from("org", "Aurora", "AuroraViewer")
-        .map(|d| d.config_dir().to_path_buf())
-        .unwrap_or_else(|| PathBuf::from("."))
+    directories::ProjectDirs::from(
+        aurora_version::brand::QUALIFIER,
+        aurora_version::brand::ORGANIZATION,
+        aurora_version::brand::APPLICATION,
+    )
+    .map(|d| d.config_dir().to_path_buf())
+    .unwrap_or_else(|| PathBuf::from("."))
 }
 
 /// Files of one account (LL_PATH_PER_SL_ACCOUNT): contact sets, pinned
@@ -2742,9 +2746,13 @@ pub fn asset_cache_dir() -> PathBuf {
 }
 
 pub(crate) fn default_cache_root() -> PathBuf {
-    directories::ProjectDirs::from("org", "Aurora", "AuroraViewer")
-        .map(|d| d.cache_dir().to_path_buf())
-        .unwrap_or_else(|| PathBuf::from("cache"))
+    directories::ProjectDirs::from(
+        aurora_version::brand::QUALIFIER,
+        aurora_version::brand::ORGANIZATION,
+        aurora_version::brand::APPLICATION,
+    )
+    .map(|d| d.cache_dir().to_path_buf())
+    .unwrap_or_else(|| PathBuf::from("cache"))
 }
 
 /// The cache folders the viewer uses when none is chosen (before the demo's
@@ -2764,9 +2772,13 @@ pub fn media_plugins_dir() -> PathBuf {
     if let Some(test) = aurora_updater::test_environment() {
         return test.root.join("media-plugins");
     }
-    directories::ProjectDirs::from("org", "Aurora", "AuroraViewer")
-        .map(|d| d.data_local_dir().join("media-plugins"))
-        .unwrap_or_else(|| PathBuf::from("media-plugins"))
+    directories::ProjectDirs::from(
+        aurora_version::brand::QUALIFIER,
+        aurora_version::brand::ORGANIZATION,
+        aurora_version::brand::APPLICATION,
+    )
+    .map(|d| d.data_local_dir().join("media-plugins"))
+    .unwrap_or_else(|| PathBuf::from("media-plugins"))
 }
 
 /// What a settings file says of the viewer window: (its maximized state,

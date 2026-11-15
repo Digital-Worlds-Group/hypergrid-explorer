@@ -30,7 +30,7 @@ fn main() {
         // executable exports nothing on its own
         if std::env::var("CARGO_CFG_TARGET_ENV").as_deref() == Ok("msvc") {
             for symbol in ["NvOptimusEnablement", "AmdPowerXpressRequestHighPerformance"] {
-                println!("cargo:rustc-link-arg-bin=aurora-viewer=/EXPORT:{symbol},DATA");
+                println!("cargo:rustc-link-arg-bin=HyperGridExplorer=/EXPORT:{symbol},DATA");
             }
         }
     }
@@ -74,7 +74,7 @@ fn dictionaries() {
 /// release must not ship without its icon again.
 fn windows_resources() {
     let manifest = std::env::var("CARGO_MANIFEST_DIR").expect("Cargo supplies CARGO_MANIFEST_DIR");
-    let icon = Path::new(&manifest).join("../../assets/branding/aurora.ico");
+    let icon = Path::new(&manifest).join("../../assets/branding/hypergrid-explorer.ico");
     println!("cargo:rerun-if-changed={}", icon.display());
 
     let display = std::env::var("DEP_AURORA_VERSION_DISPLAY").expect("aurora-version's build script supplies the version");
@@ -88,15 +88,22 @@ fn windows_resources() {
 
     let mut res = winresource::WindowsResource::new();
     res.set_icon(&icon.to_string_lossy())
-        .set("ProductName", "Aurora Viewer")
-        .set("FileDescription", "Aurora Viewer")
-        .set("OriginalFilename", "aurora-viewer.exe")
+        // aurora_version::brand, spelled out: a build script cannot read it
+        .set("ProductName", "HyperGrid Explorer")
+        .set("FileDescription", "HyperGrid Explorer")
+        .set("CompanyName", "Terry Ford")
+        .set(
+            "LegalCopyright",
+            "HyperGrid Explorer (c) 2026 Terry Ford. Based on Aurora Viewer, (c) 2026 the Aurora Viewer contributors. GPL-3.0-or-later.",
+        )
+        .set("OriginalFilename", "HyperGridExplorer.exe")
+        .set("InternalName", "HyperGridExplorer")
         .set("ProductVersion", &display)
         .set("FileVersion", &display)
         .set_version_info(winresource::VersionInfo::PRODUCTVERSION, packed)
         .set_version_info(winresource::VersionInfo::FILEVERSION, packed);
     // the viewer only: the test binaries of this crate need no resources
-    if let Err(error) = res.compile_for("aurora-viewer") {
-        panic!("Cannot embed the icon and version of aurora-viewer.exe (rc.exe of the Windows SDK): {error}");
+    if let Err(error) = res.compile_for("HyperGridExplorer") {
+        panic!("Cannot embed the icon and version of HyperGridExplorer.exe (rc.exe of the Windows SDK): {error}");
     }
 }

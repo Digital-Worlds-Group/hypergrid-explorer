@@ -1,7 +1,7 @@
 ﻿<#
 .SYNOPSIS
     Builds the latest main of GitHub (or a PR) in --release, next to the
-    repository: ..\RELEASE\Aurora-Viewer\aurora-viewer.exe, ready to launch.
+    repository: ..\RELEASE\HyperGrid-Explorer\HyperGridExplorer.exe, ready to launch.
 
 .DESCRIPTION
     The code built always comes from GitHub, never from the local
@@ -22,7 +22,7 @@ param([int]$Pr)
 $p = Get-AuroraPaths
 $rel = Join-Path $p.Root 'RELEASE'
 $src = Join-Path $rel 'src'
-$out = Join-Path $rel 'Aurora-Viewer'
+$out = Join-Path $rel 'HyperGrid-Explorer'
 New-Item -ItemType Directory -Force -Path $rel -ErrorAction Stop | Out-Null
 
 # Double-click launcher (build-release.bat 42 builds PR 42). It runs the
@@ -105,15 +105,15 @@ try {
 # Use the built commit's verifier when available, just like package.ps1.
 # Older revisions do not understand --version: invoking it would open a
 # viewer, so keep their existing packaging path without querying the exe.
-$builtExe = Join-Path $src 'target\release\aurora-viewer.exe'
+$builtExe = Join-Path $src 'target\release\HyperGridExplorer.exe'
 $reportedVersion = $null
 $verifyVersion = Join-Path $src 'scripts\verify-version.ps1'
 if (Test-Path -LiteralPath $verifyVersion) {
     $reportedVersion = (& $builtExe --version | Out-String).Trim()
-    if ($LASTEXITCODE -ne 0 -or $reportedVersion -notmatch '^Aurora Viewer (\S+)$') {
+    if ($LASTEXITCODE -ne 0 -or $reportedVersion -notmatch '^HyperGrid Explorer (\S+)$') {
         throw "The built viewer did not report a valid version: '$reportedVersion'."
     }
-    $exactTag = git -C $src describe --tags --match 'v[0-9]*.[0-9]*.[0-9]*' --exact-match 2>$null
+    $exactTag = git -C $src describe --tags --match 'hge-v[0-9]*.[0-9]*.[0-9]*' --exact-match 2>$null
     if ($LASTEXITCODE -eq 0) { & $verifyVersion -Exe $builtExe -Tag $exactTag.Trim() }
 }
 
@@ -121,7 +121,7 @@ if (Test-Path -LiteralPath $verifyVersion) {
 $package = Join-Path $src 'scripts\package.ps1'
 if (-not (Test-Path -LiteralPath $package)) { $package = Join-Path $PSScriptRoot 'package.ps1' }
 if (Test-Path -LiteralPath $out) { Remove-Item -LiteralPath $out -Recurse -Force -ErrorAction Stop }
-& $package -Exe (Join-Path $src 'target\release\aurora-viewer.exe') -Out $out -Source $src
+& $package -Exe (Join-Path $src 'target\release\HyperGridExplorer.exe') -Out $out -Source $src
 @(
     if ($reportedVersion) { $reportedVersion }
     "${what}: $((git -C $src log -1 --format='%h %s (%ci)').Trim())"
@@ -129,5 +129,5 @@ if (Test-Path -LiteralPath $out) { Remove-Item -LiteralPath $out -Recurse -Force
 ) | Set-Content -LiteralPath (Join-Path $out 'version.txt') -Encoding UTF8 -ErrorAction Stop
 
 Write-Host ""
-Write-Host "Ready in $([math]::Floor($sw.Elapsed.TotalMinutes)) min $($sw.Elapsed.Seconds) s: $out\aurora-viewer.exe" -ForegroundColor Green
+Write-Host "Ready in $([math]::Floor($sw.Elapsed.TotalMinutes)) min $($sw.Elapsed.Seconds) s: $out\HyperGridExplorer.exe" -ForegroundColor Green
 Write-Host "Double-click $bat to rebuild (build-release.bat 42: PR 42)."

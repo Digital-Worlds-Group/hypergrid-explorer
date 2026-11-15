@@ -1,29 +1,47 @@
 <div align="center">
 
-<img src="assets/branding/aurora-logo.svg" alt="Aurora Viewer" width="180">
+<img src="assets/branding/hypergrid-explorer-logo.png" alt="HyperGrid Explorer" width="520">
 
-# Aurora Viewer
+**The viewer for the HyperGrid: HyperGrid City, 3RD Rock Grid, DigiWorldz and their neighbours.**<br>
+A modern OpenSimulator viewer written in Rust, based on [Aurora Viewer](https://github.com/Aurora-Viewer/Aurora-Viewer).
 
-**A modern Second Life viewer, written in Rust.**<br>
-A Vulkan renderer, a clean interface, and the Second Life you already know.
+[Website](https://hypergridexplorer.com) · [License: GPLv3](LICENSE) · [Notices](NOTICE.md)
 
-[![Download](docs/readme/button-download.svg)](https://github.com/Aurora-Viewer/Aurora-Viewer/releases/latest)&nbsp;
-[![Download for Linux](docs/readme/button-download-linux.svg)](docs/LINUX.md)&nbsp;
-[![Download for macOS (experimental)](docs/readme/button-download-macos.svg)](docs/MACOS.md)&nbsp;
-[![Discord](docs/readme/button-discord.svg)](https://discord.gg/TK4nbMGmKt)&nbsp;
-[![Website](docs/readme/button-website.svg)](https://aurora-viewer.org)
-
-[![CI](https://github.com/Aurora-Viewer/Aurora-Viewer/actions/workflows/ci.yml/badge.svg)](https://github.com/Aurora-Viewer/Aurora-Viewer/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/Aurora-Viewer/Aurora-Viewer?include_prereleases&color=8B5CF6)](https://github.com/Aurora-Viewer/Aurora-Viewer/releases)
-[![License: GPLv3](https://img.shields.io/badge/license-GPLv3-4F46E5)](LICENSE)
-[![Rust](https://img.shields.io/badge/rust-stable-5EEAD4?logo=rust&logoColor=white)](https://www.rust-lang.org)
-[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-070B1F)](#build)
-
-<sub>This software is not provided or supported by Linden Lab, the makers of Second Life.</sub>
-
-[Why Aurora](#why-aurora) · [Creator tools](#creator-tools) · [Performance](#performance) · [Features](#what-works-today) · [Roadmap](#roadmap) · [Using Aurora](#using-aurora) · [Build](#build) · [Contributing](#contributing)
+<sub>HyperGrid Explorer is a modified version of Aurora Viewer, maintained by Terry Ford.
+It is not provided or supported by the Aurora Viewer team, nor by Linden Lab, the makers of Second Life.</sub>
 
 </div>
+
+## About this fork
+
+HyperGrid Explorer is a **fork of [Aurora Viewer](https://github.com/Aurora-Viewer/Aurora-Viewer)**,
+maintained by Terry Ford (terryf43080@outlook.com).
+
+| | |
+|---|---|
+| Forked from | Aurora Viewer **0.9.10-beta.20261115.1 + 17 commits** |
+| Aurora commit | [`03a8b9d15a7824ddd2bb22afeb26af28141eb36d`](https://github.com/Aurora-Viewer/Aurora-Viewer/commit/03a8b9d15a7824ddd2bb22afeb26af28141eb36d) (2026-11-15) |
+| Modified since | 2026-11-15 |
+| HyperGrid Explorer versions | Tags `hge-v<version>`, starting at 0.1.0 |
+| Licence | GNU GPL v3 or later, like Aurora Viewer ([LICENSE](LICENSE), [NOTICE.md](NOTICE.md)) |
+
+The viewer shows the same information in **Help › About** and in
+**Preferences › HyperGrid Explorer › About**. After each merge from Aurora
+Viewer, update the table above and `crates/aurora-version/src/brand.rs`
+(`UPSTREAM_VERSION`, `UPSTREAM_COMMIT`, `UPSTREAM_DATE`) together.
+
+**Thank you to the Aurora Viewer team.** HyperGrid Explorer stands on their
+work: a modern viewer written from scratch in Rust, with its Vulkan renderer,
+its interface and the Legacy Viewer behaviour they ported with care.
+None of this would exist without them.
+
+What HyperGrid Explorer still plans to change is in [TODO.md](TODO.md).
+
+> **About the rest of this file.** HyperGrid Explorer is built from Aurora
+> Viewer's source. The sections below are Aurora Viewer's own README: they
+> describe the features both viewers share, and still use Aurora's name.
+> Downloads, support and news for HyperGrid Explorer are on
+> [hypergridexplorer.com](https://hypergridexplorer.com).
 
 **Multi-threaded from the ground up: parallel loading, ultra fast teleports, built for today's hardware with Vulkan and Rust.**  
 <img width="1920" height="1032" alt="Aurora Viewer in a Japanese garden, with the People, Controls, Places, Inventory, Performance and Conversations windows open" src="docs/screenshots/world.webp" />  

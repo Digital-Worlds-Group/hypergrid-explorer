@@ -10,7 +10,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-const EXE: &str = "aurora-viewer.exe";
+const EXE: &str = "HyperGridExplorer.exe";
 const ACK_ENV: &str = "AURORA_UPDATE_ACK";
 /// Set on the previous viewer restored after a failed update: the
 /// transaction folder, whose `failure.txt` says why ([`failed_update`]).

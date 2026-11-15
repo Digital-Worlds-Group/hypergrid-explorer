@@ -15,8 +15,16 @@ pub const ISSUES: &str = "https://github.com/Aurora-Viewer/Aurora-Viewer/issues"
 pub const VERIFY: &str = "https://github.com/login/device";
 const TOKEN: &str = "https://github.com/login/oauth/access_token";
 // Public identifier of the project's GitHub App (Device Flow enabled).
-const CLIENT_ID: &str = "Iv23liT7PLWClMLztI1W";
-const SERVICE: &str = "Aurora Viewer GitHub";
+// HyperGrid Explorer: Aurora Viewer's App and tracker are not ours, so the
+// crash reports are not sent while the fork has no repository of its own
+// (`brand::GITHUB_REPO`); set this App and the two addresses above to the
+// fork's when it has one.
+const CLIENT_ID: &str = if aurora_version::brand::GITHUB_REPO.is_some() {
+    "Iv23liT7PLWClMLztI1W"
+} else {
+    ""
+};
+const SERVICE: &str = "HyperGrid Explorer GitHub"; // brand::CREDENTIAL_SERVICE + " GitHub"
 const ACCOUNT: &str = "crash-reports";
 /// The credential store's entry of the authorization (service, account),
 /// for the removal from this computer (`uninstall.rs`).
@@ -233,6 +241,10 @@ impl Session {
             return;
         }
         self.failure = None;
+        if CLIENT_ID.is_empty() && !self.demo {
+            self.failure = Some(Failure::Configuration);
+            return;
+        }
         let (tx, rx) = crossbeam_channel::bounded(2);
         let (cancel_tx, cancel_rx) = crossbeam_channel::bounded(1);
         self.cancel = Some(cancel_tx);
@@ -515,6 +527,10 @@ async fn create_request(client: &reqwest::Client, url: &str, token: &str, title:
 /// The browser alternative: a new issue with the title and, when the URL
 /// stays short enough, the body; otherwise the window copies the body.
 pub fn browser_url(title: &str, body: &str) -> (String, bool) {
+    if aurora_version::brand::GITHUB_REPO.is_none() {
+        // no tracker of our own yet: the website, and the window copies the body
+        return (aurora_version::brand::WEBSITE.to_owned(), false);
+    }
     let mut url = reqwest::Url::parse(&format!("{ISSUES}/new")).expect("constant project URL");
     url.query_pairs_mut().append_pair("title", title).append_pair("body", body);
     if url.as_str().len() <= 7000 {
@@ -684,6 +700,12 @@ mod tests {
 
     #[test]
     fn the_browser_link_carries_the_body_while_it_fits() {
+        // HyperGrid Explorer: until the fork has its own tracker, the website
+        // opens and the window copies the body (never Aurora Viewer's tracker)
+        if aurora_version::brand::GITHUB_REPO.is_none() {
+            assert_eq!(browser_url("Crash", "body"), (aurora_version::brand::WEBSITE.to_owned(), false));
+            return;
+        }
         let (url, with_body) = browser_url("Crash: é & ?", "Rapport : ça & ceci");
         let fields: std::collections::HashMap<_, _> = reqwest::Url::parse(&url).unwrap().query_pairs().into_owned().collect();
         assert!(with_body && fields["title"] == "Crash: é & ?" && fields["body"] == "Rapport : ça & ceci");

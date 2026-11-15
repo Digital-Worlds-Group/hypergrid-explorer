@@ -43,8 +43,114 @@ fn gradient(mesh: &mut Mesh, r: Rect, top: Color32, bottom: Color32) {
     mesh.add_triangle(i, i + 2, i + 3);
 }
 
+/// HyperGrid Explorer's background picture (branding `assets/Background.png`),
+/// in place of Aurora Viewer's drawn sky wherever that sky showed: the login
+/// screen, the loading screens without a last view, and blurred behind the
+/// glass of the login cards and the startup splash.
+const PICTURE: &[u8] = include_bytes!("../../../../assets/branding/hypergrid-explorer-background.png");
+
+/// The picture decoded off the main thread: sharp, and a small blurred copy
+/// for the frosted glass (scaled up, it stays smooth).
+struct Decoded {
+    sharp: egui::ColorImage,
+    soft: egui::ColorImage,
+}
+
+static DECODE_STARTED: std::sync::Once = std::sync::Once::new();
+static DECODED: std::sync::Mutex<Option<Decoded>> = std::sync::Mutex::new(None);
+/// The two textures (sharp, soft) and the picture's size, once uploaded. One
+/// egui context per process (the viewer, or the splash helper): their handles
+/// are kept for the life of the process.
+static TEXTURES: std::sync::OnceLock<(egui::TextureId, egui::TextureId, egui::Vec2)> = std::sync::OnceLock::new();
+
+fn decode() -> Option<Decoded> {
+    let img = match image::load_from_memory(PICTURE) {
+        Ok(img) => img.to_rgba8(),
+        Err(e) => {
+            log::warn!("background picture not decoded: {e}");
+            return None;
+        }
+    };
+    let (w, h) = img.dimensions();
+    let small = image::imageops::resize(&img, (w / 6).max(1), (h / 6).max(1), image::imageops::FilterType::Triangle);
+    let soft = image::imageops::blur(&small, 2.5);
+    let color = |i: &image::RgbaImage| egui::ColorImage::from_rgba_unmultiplied([i.width() as usize, i.height() as usize], i.as_raw());
+    Some(Decoded {
+        sharp: color(&img),
+        soft: color(&soft),
+    })
+}
+
+/// Starts decoding the picture (once) and uploads it to `ctx` when it is
+/// ready; true once it can be drawn. Until then the drawn sky shows.
+pub fn prepare(ctx: &egui::Context) -> bool {
+    if TEXTURES.get().is_some() {
+        return true;
+    }
+    DECODE_STARTED.call_once(|| {
+        let ctx = ctx.clone();
+        std::thread::spawn(move || {
+            let decoded = decode();
+            if let Ok(mut slot) = DECODED.lock() {
+                *slot = decoded;
+            }
+            ctx.request_repaint();
+        });
+    });
+    let Some(decoded) = DECODED.lock().ok().and_then(|mut slot| slot.take()) else {
+        return false;
+    };
+    let size = egui::vec2(decoded.sharp.size[0] as f32, decoded.sharp.size[1] as f32);
+    let sharp = ctx.load_texture("hge-background", decoded.sharp, egui::TextureOptions::LINEAR);
+    let soft = ctx.load_texture("hge-background-soft", decoded.soft, egui::TextureOptions::LINEAR);
+    let ids = (sharp.id(), soft.id(), size);
+    // the textures live as long as the process (one context per process)
+    std::mem::forget(sharp);
+    std::mem::forget(soft);
+    let _ = TEXTURES.set(ids);
+    true
+}
+
+/// Whether the background picture is on the GPU (or in the splash's painter).
+pub fn picture_ready() -> bool {
+    TEXTURES.get().is_some()
+}
+
+/// The part of a picture of `size` that covers `rect` without distortion
+/// (centred, like a wallpaper set to "fill"): the picture follows every
+/// window size, trimming only what the window's shape cannot show.
+fn cover_uv(size: egui::Vec2, rect: Rect) -> Rect {
+    let picture = size.x / size.y.max(1.0);
+    let window = rect.width() / rect.height().max(1.0);
+    if window > picture {
+        let h = picture / window;
+        Rect::from_min_max(Pos2::new(0.0, (1.0 - h) / 2.0), Pos2::new(1.0, (1.0 + h) / 2.0))
+    } else {
+        let w = window / picture;
+        Rect::from_min_max(Pos2::new((1.0 - w) / 2.0, 0.0), Pos2::new((1.0 + w) / 2.0, 1.0))
+    }
+}
+
+/// The background picture over `rect` (blurred when `soft`), or None before
+/// it is ready.
+fn picture_shapes(p: &Palette, rect: Rect, alpha: f32, soft: bool) -> Option<Vec<Shape>> {
+    let &(sharp, blurred, size) = TEXTURES.get()?;
+    let a = alpha.clamp(0.0, 1.0);
+    let mut out = vec![Shape::image(
+        if soft { blurred } else { sharp },
+        rect,
+        cover_uv(size, rect),
+        crate::ui::widgets::PICTURE_TINT.gamma_multiply(a),
+    )];
+    // a light midnight-navy veil keeps the text over the picture readable
+    let veil = p.navy.gamma_multiply(0.22 * a);
+    out.push(Shape::rect_filled(rect, 0.0, veil));
+    Some(out)
+}
+
 /// Paint the background over `rect`; `t` = time in seconds, `alpha` fades it.
 pub fn paint(painter: &egui::Painter, p: &Palette, rect: Rect, t: f32, alpha: f32) {
+    prepare(painter.ctx());
     painter.extend(shapes(p, rect, t, alpha, false));
 }
 
@@ -74,6 +180,11 @@ pub fn frosted_pane(p: &Palette, screen: Rect, t: f32, pane: Rect, lights: Vec<S
 }
 
 fn shapes(p: &Palette, rect: Rect, t: f32, alpha: f32, soft: bool) -> Vec<Shape> {
+    // HyperGrid Explorer: the background picture once it is ready; Aurora's
+    // drawn sky below only shows for the first frames while it decodes
+    if let Some(picture) = picture_shapes(p, rect, alpha, soft) {
+        return picture;
+    }
     let mut out = Vec::new();
     let a = alpha.clamp(0.0, 1.0);
     let (w, h) = (rect.width(), rect.height());
@@ -205,6 +316,53 @@ fn shapes(p: &Palette, rect: Rect, t: f32, alpha: f32, soft: bool) -> Vec<Shape>
     ridge(0.7, 0.86, 0.16, fade(mix(p.navy, p.indigo, 0.16)));
     ridge(2.9, 0.93, 0.13, fade(mix(p.navy, Color32::BLACK, 0.35)));
     out
+}
+
+/// The background colour of HyperGrid Explorer's approved horizontal logo (its
+/// edges read #021322 to #031424): the logo is an opaque picture, so the
+/// screens lay it on a pool of its own colour instead of cutting it out.
+pub const LOGO_BACKDROP: Color32 = Color32::from_rgb(0x02, 0x13, 0x22);
+
+/// HyperGrid Explorer: a pool of [`LOGO_BACKDROP`] under the logo's `rect`,
+/// opaque over the picture and fading to nothing `feather` points beyond its
+/// edges, with rounded outer corners. The logo's rectangle then melts into
+/// whatever gradient or sky is behind it, and the picture itself stays whole
+/// (never cropped, recoloured or masked).
+pub fn logo_pool_shape(rect: Rect, feather: f32) -> Shape {
+    const STEPS: usize = 10;
+    let solid = LOGO_BACKDROP;
+    let clear = Color32::TRANSPARENT;
+    let mut m = Mesh::default();
+    // the inner rectangle's corners, clockwise from top left, each with the
+    // quarter circle its outer corner sweeps
+    let corners = [
+        (rect.left_top(), std::f32::consts::PI),
+        (rect.right_top(), 1.5 * std::f32::consts::PI),
+        (rect.right_bottom(), 0.0),
+        (rect.left_bottom(), 0.5 * std::f32::consts::PI),
+    ];
+    for (corner, start) in corners {
+        for k in 0..=STEPS {
+            let a = start + k as f32 / STEPS as f32 * std::f32::consts::FRAC_PI_2;
+            m.vertices.push(v(corner, solid));
+            m.vertices.push(v(corner + egui::vec2(a.cos(), a.sin()) * feather, clear));
+        }
+    }
+    let n = (m.vertices.len() / 2) as u32;
+    for i in 0..n {
+        let j = (i + 1) % n;
+        let (ai, ao, bi, bo) = (2 * i, 2 * i + 1, 2 * j, 2 * j + 1);
+        m.add_triangle(ai, ao, bo);
+        m.add_triangle(ai, bo, bi);
+    }
+    // the opaque middle
+    let base = m.vertices.len() as u32;
+    for c in [rect.left_top(), rect.right_top(), rect.right_bottom(), rect.left_bottom()] {
+        m.vertices.push(v(c, solid));
+    }
+    m.add_triangle(base, base + 1, base + 2);
+    m.add_triangle(base, base + 2, base + 3);
+    Shape::mesh(m)
 }
 
 /// Soft radial light (additive): `intensity` at the center fading to zero

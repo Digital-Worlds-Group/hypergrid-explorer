@@ -228,7 +228,7 @@ fn any_accent_keeps_its_text_and_shows_on_the_panel() {
         );
         assert!(contrast(p.violet, p.panel) >= UI, "{accent:?} → {:?}", p.violet);
         assert!(contrast(p.on_accent, p.violet) >= need, "on {:?}: {:?}", p.violet, p.on_accent);
-        assert!([s.on_accent, s.navy].contains(&p.on_accent));
+        assert!([s.on_accent, s.navy, egui::Color32::WHITE, egui::Color32::BLACK].contains(&p.on_accent));
         assert_eq!(adjusted.accent, contrast(accent, s.panel) < UI, "{accent:?}");
     }
     // the skin's violet keeps its white text, a bright yellow takes navy

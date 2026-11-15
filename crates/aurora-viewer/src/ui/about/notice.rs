@@ -136,10 +136,18 @@ mod tests {
     #[test]
     fn the_built_in_notice_names_the_copyright_the_licence_and_every_bundled_work() {
         let blocks = blocks();
-        // the copyright line opens the Licences tab: modified versions must
-        // keep it on screen (GPLv3 section 5(d))
-        assert!(matches!(&blocks[0], Block::Paragraph(p) if p.starts_with("Copyright © ") && p.contains("Aurora Viewer contributors")));
-        assert!(matches!(&blocks[1], Block::Paragraph(p) if p.contains("GNU General Public License")));
+        // HyperGrid Explorer's notice opens the Licences tab (a modified
+        // version, by whom, since when, under the GPL); Aurora Viewer's
+        // copyright line must still be on screen (GPLv3 section 5(d))
+        assert!(matches!(&blocks[0], Block::Heading(h) if h == "HyperGrid Explorer"));
+        assert!(
+            matches!(&blocks[1], Block::Paragraph(p) if p.contains("modified version of Aurora Viewer") && p.contains("GNU General Public License"))
+        );
+        assert!(
+            blocks
+                .iter()
+                .any(|b| matches!(b, Block::Paragraph(p) if p.starts_with("Copyright © ") && p.contains("Aurora Viewer contributors")))
+        );
         let rows = blocks.iter().filter(|b| matches!(b, Block::Row { .. })).count();
         let table_lines = NOTICE.lines().filter(|l| l.trim_start().starts_with('|')).count();
         let tables = NOTICE.lines().filter(|l| l.trim_start().starts_with("|---")).count();

@@ -111,9 +111,42 @@ pub struct AboutUi {
     pub scroll_to_end: bool,
 }
 
+/// HyperGrid Explorer: what this fork is and where it comes from, one line
+/// each (Help › About and Preferences › HyperGrid Explorer › About).
+pub fn fork_lines() -> Vec<String> {
+    use aurora_version::brand;
+    vec![
+        aurora_i18n::tr!("about-fork-version", version = aurora_version::version()),
+        aurora_i18n::tr!(
+            "about-fork-upstream",
+            upstream = brand::UPSTREAM,
+            version = brand::UPSTREAM_VERSION,
+            commit = &brand::UPSTREAM_COMMIT[..9],
+            date = brand::UPSTREAM_DATE
+        ),
+        aurora_i18n::tr!(
+            "about-fork-based-on",
+            upstream = brand::UPSTREAM,
+            owner = brand::OWNER,
+            date = brand::MODIFIED_SINCE
+        ),
+        aurora_i18n::tr!("about-fork-maintainer", owner = brand::OWNER, contact = brand::OWNER_CONTACT),
+        aurora_i18n::tr!("about-fork-website", url = brand::WEBSITE),
+        aurora_i18n::tr!(
+            "about-fork-upstream-source",
+            upstream = brand::UPSTREAM,
+            url = brand::UPSTREAM_SOURCE
+        ),
+        aurora_i18n::tr!("about-fork-thanks", upstream = brand::UPSTREAM),
+    ]
+}
+
 /// The release page of this version, for a published version only (a
 /// build between two tags has none).
 pub fn release_notes(version: &str) -> Option<String> {
+    // HyperGrid Explorer: Aurora Viewer's release pages describe Aurora's
+    // builds, not ours; none until the fork publishes its own releases
+    aurora_version::brand::GITHUB_REPO?;
     let published = !version.is_empty() && !version.contains('+') && version != "0.0.0";
     published.then(|| format!("{}/releases/tag/v{version}", crate::links::GITHUB))
 }
@@ -123,7 +156,11 @@ pub fn release_notes(version: &str) -> Option<String> {
 /// its English labels).
 pub fn copy_text(sections: &[Section]) -> String {
     let version = aurora_version::version();
-    let mut out = format!("Aurora Viewer {version}\n");
+    let mut out = format!("{} {version}\n", aurora_version::brand::NAME);
+    for line in &fork_lines()[1..] {
+        out.push_str(line);
+        out.push('\n');
+    }
     if let Some(url) = release_notes(version) {
         out.push_str(&format!("Release notes: {url}\n"));
     }
@@ -259,13 +296,36 @@ fn hero(ui: &mut egui::Ui, p: &Palette, logo: Option<&egui::TextureHandle>) {
     let mut logo_rect = None;
     child.horizontal(|ui| {
         ui.spacing_mut().item_spacing.x = 18.0;
-        if let Some(logo) = logo {
-            logo_rect = Some(ui.add(egui::Image::new(logo).fit_to_exact_size(Vec2::splat(LOGO))).rect);
-        }
         ui.vertical(|ui| {
             ui.spacing_mut().item_spacing.y = 4.0;
-            ui.label(sheet::semibold(ui, "Aurora Viewer", 22.0, p.ink));
+            // HyperGrid Explorer: the approved horizontal logo carries the
+            // name; it is fitted whole (contain), never cropped
+            match logo {
+                Some(logo) => {
+                    let room = Vec2::new(ui.available_width().min(LOGO * 3.0), LOGO);
+                    // the logo melts into the banner on a pool of its own colour
+                    let pool = ui.painter().add(Shape::Noop);
+                    let r = ui.add(egui::Image::new(logo).fit_to_exact_size(room)).rect;
+                    ui.painter().set(pool, crate::ui::aurora_bg::logo_pool_shape(r, 18.0));
+                    logo_rect = Some(r);
+                }
+                None => {
+                    ui.label(sheet::semibold(ui, aurora_version::brand::NAME, 22.0, p.ink));
+                }
+            }
             ui.label(RichText::new(crate::ui::login::client_tagline()).size(12.0).color(p.violet_pale));
+            ui.add(
+                egui::Label::new(
+                    RichText::new({
+                        let lines = fork_lines();
+                        // where it comes from, and thanks to Aurora's team
+                        format!("{} {} {}", lines[1], lines[2], lines[lines.len() - 1])
+                    })
+                    .size(11.5)
+                    .color(p.muted),
+                )
+                .wrap(),
+            );
             ui.add(
                 egui::Label::new(
                     RichText::new(aurora_i18n::tr!("about-third-party-viewer"))
@@ -287,8 +347,17 @@ fn hero(ui: &mut egui::Ui, p: &Palette, logo: Option<&egui::TextureHandle>) {
                 if let Some(url) = release_notes(aurora_version::version()) {
                     link(ui, p, "file-text-filled", aurora_i18n::tr!("about-release-notes"), &url);
                 }
-                link(ui, p, "brand-github-filled", "GitHub", crate::links::GITHUB);
+                if !crate::links::SOURCE.is_empty() {
+                    link(ui, p, "brand-github-filled", "GitHub", crate::links::SOURCE);
+                }
                 link(ui, p, "world-filled", aurora_i18n::tr!("ui-login-website"), crate::links::WEBSITE);
+                link(
+                    ui,
+                    p,
+                    "mail-filled",
+                    aurora_version::brand::OWNER_CONTACT,
+                    &format!("mailto:{}", aurora_version::brand::OWNER_CONTACT),
+                );
             });
         });
     });
@@ -296,7 +365,7 @@ fn hero(ui: &mut egui::Ui, p: &Palette, logo: Option<&egui::TextureHandle>) {
     ui.painter()
         .set(face, Shape::rect_filled(rect, ui.visuals().window_corner_radius, p.field));
     if let Some(logo) = logo_rect {
-        let glow = crate::ui::aurora_bg::radial_glow_shape(logo.center(), LOGO * 1.6, p.violet, 0.38);
+        let glow = crate::ui::aurora_bg::radial_glow_shape(logo.center(), logo.width() * 0.6, p.violet, 0.38);
         // the light stays in the banner: a shape set keeps the clip of the
         // painter that sets it
         ui.painter().with_clip_rect(rect.intersect(ui.clip_rect())).set(light, glow);
@@ -492,10 +561,9 @@ mod tests {
 
     #[test]
     fn release_notes_only_for_a_published_version() {
-        assert_eq!(
-            release_notes("0.7.0").as_deref(),
-            Some("https://github.com/Aurora-Viewer/Aurora-Viewer/releases/tag/v0.7.0")
-        );
+        // HyperGrid Explorer: none until the fork publishes its own releases
+        // (Aurora Viewer's release pages describe Aurora's builds)
+        assert_eq!(release_notes("0.7.0"), None);
         assert_eq!(release_notes("0.7.0+3.gabcdef123"), None);
         assert_eq!(release_notes("0.0.0"), None);
     }
@@ -516,7 +584,7 @@ mod tests {
         ];
         let text = copy_text(&sections);
         let blocks: Vec<&str> = text.split("\n\n").collect();
-        assert!(blocks[0].starts_with(&format!("Aurora Viewer {}", aurora_version::version())));
+        assert!(blocks[0].starts_with(&format!("{} {}", aurora_version::brand::NAME, aurora_version::version())));
         assert_eq!(
             blocks[1],
             format!(

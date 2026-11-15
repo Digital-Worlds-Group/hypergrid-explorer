@@ -66,7 +66,8 @@ fn catalogs() -> &'static [Catalog] {
             .iter()
             .map(|&(code, source)| {
                 let locale = code.parse().expect("bundled locale filename is a language identifier");
-                let resource = FluentResource::try_new(source.to_owned()).expect("bundled Fluent syntax is checked by tests");
+                let resource = FluentResource::try_new(aurora_version::brand::rebrand(source).into_owned())
+                    .expect("bundled Fluent syntax is checked by tests");
                 let keys: Vec<_> = resource
                     .entries()
                     .filter_map(|entry| match entry {

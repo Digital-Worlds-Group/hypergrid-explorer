@@ -45,7 +45,7 @@ fn main() {
     let tag = std::env::var("AURORA_VERSION_TAG").ok();
     let description = git(
         &root,
-        &["describe", "--tags", "--match", "v[0-9]*.[0-9]*.[0-9]*", "--long", "--abbrev=9"],
+        &["describe", "--tags", "--match", "hge-v[0-9]*.[0-9]*.[0-9]*", "--long", "--abbrev=9"],
     );
     let commit = git(&root, &["rev-parse", "--short=9", "HEAD"]);
     let count = git(&root, &["rev-list", "--count", "HEAD"])

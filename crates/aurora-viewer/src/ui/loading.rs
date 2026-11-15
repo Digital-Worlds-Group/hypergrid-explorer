@@ -287,27 +287,42 @@ fn banner(
 
     // brand, top left
     let brand = Pos2::new(screen.left() + margin, screen.top() + margin * 0.85);
-    let mut brand_text = brand.x;
+    let brand_text = brand.x;
     if let Some(l) = logo {
-        let size = 40.0 * k;
-        let rect = Rect::from_min_size(Pos2::new(brand.x, brand.y - size / 2.0), Vec2::splat(size));
+        // HyperGrid Explorer: the approved horizontal logo carries the name;
+        // its whole image at its own aspect ratio, never cropped
+        let height = 44.0 * k;
+        let [w, h] = l.size();
+        let size = Vec2::new(height * w as f32 / h.max(1) as f32, height);
+        let rect = Rect::from_min_size(Pos2::new(brand.x, brand.y - size.y / 2.0), size);
         let breathe = 0.85 + 0.15 * (t * 1.4).sin();
-        super::aurora_bg::radial_glow(painter, rect.center(), size * 1.1, p.violet, 0.4 * breathe * a);
+        super::aurora_bg::radial_glow(painter, rect.center(), size.x * 0.5, p.violet, 0.4 * breathe * a);
+        // the logo melts into the scene on a pool of its own colour
+        let mut pool = super::aurora_bg::logo_pool_shape(rect, size.y * 0.5);
+        if a < 1.0
+            && let egui::Shape::Mesh(m) = &mut pool
+        {
+            std::sync::Arc::make_mut(m)
+                .vertices
+                .iter_mut()
+                .for_each(|v| v.color = v.color.gamma_multiply(a));
+        }
+        painter.add(pool);
         painter.image(
             l.id(),
             rect,
             Rect::from_min_max(Pos2::ZERO, Pos2::new(1.0, 1.0)),
             super::widgets::PICTURE_TINT.gamma_multiply(a),
         );
-        brand_text = rect.right() + 12.0 * k;
+    } else {
+        painter.text(
+            Pos2::new(brand_text, brand.y),
+            egui::Align2::LEFT_CENTER,
+            aurora_version::brand::NAME,
+            egui::FontId::proportional(15.0 * k),
+            p.violet_pale.gamma_multiply(a),
+        );
     }
-    painter.text(
-        Pos2::new(brand_text, brand.y),
-        egui::Align2::LEFT_CENTER,
-        "Aurora Viewer",
-        egui::FontId::proportional(15.0 * k),
-        p.violet_pale.gamma_multiply(a),
-    );
 
     // progress: a line of light along the bottom edge
     let line_height = (3.0 * k).max(2.0);

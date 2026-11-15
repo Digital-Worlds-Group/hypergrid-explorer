@@ -64,7 +64,12 @@ fn paths(install: &Path) -> Result<(PathBuf, PathBuf)> {
         crate::feed::Source::local(marker["feed"].as_str().context("test feed")?)?;
         return Ok((root.join("cache"), root.join("profile/settings.json")));
     }
-    let dirs = directories::ProjectDirs::from("org", "Aurora", "AuroraViewer").context("user data directories unavailable")?;
+    let dirs = directories::ProjectDirs::from(
+        aurora_version::brand::QUALIFIER,
+        aurora_version::brand::ORGANIZATION,
+        aurora_version::brand::APPLICATION,
+    )
+    .context("user data directories unavailable")?;
     Ok((dirs.cache_dir().into(), dirs.config_dir().join("settings.json")))
 }
 

@@ -343,7 +343,12 @@ const PAUSED_RESOLUTION_DIVISOR: u32 = 16;
 /// The wolf logo (window icon, login and loading screens, About, system
 /// notifications), read from the branding folder: one file for the viewer,
 /// the README and the exe icon.
-pub(crate) const LOGO_PNG: &[u8] = include_bytes!("../../../assets/branding/aurora-logo.png");
+/// HyperGrid Explorer's approved horizontal logo (it carries the name): the
+/// login screens, the loading banner, About and the startup splash.
+pub(crate) const LOGO_PNG: &[u8] = include_bytes!("../../../assets/branding/hypergrid-explorer-logo.png");
+/// HyperGrid Explorer's approved square application icon (256 px derivative
+/// of the approved master): the window and the system notifications.
+pub(crate) const ICON_PNG: &[u8] = include_bytes!("../../../assets/branding/hypergrid-explorer-icon-256.png");
 
 struct LogoData {
     ui: egui::ColorImage,
@@ -1627,19 +1632,22 @@ impl App {
 
         // Decode the logo off the main thread.
         let (tx, rx) = crossbeam_channel::bounded(1);
-        std::thread::spawn(move || match image::load_from_memory(LOGO_PNG) {
-            Ok(img) => {
-                let ui_img = img.resize(384, 384, image::imageops::FilterType::Triangle).to_rgba8();
-                let icon = img.resize(64, 64, image::imageops::FilterType::Triangle).to_rgba8();
-                let ci = egui::ColorImage::from_rgba_unmultiplied([ui_img.width() as usize, ui_img.height() as usize], ui_img.as_raw());
-                let (w, h) = icon.dimensions();
-                let _ = tx.send(LogoData {
-                    ui: ci,
-                    icon: Some((icon.into_raw(), w, h)),
-                });
-            }
-            Err(e) => log::warn!("logo decode failed: {e}"),
-        });
+        std::thread::spawn(
+            move || match (image::load_from_memory(LOGO_PNG), image::load_from_memory(ICON_PNG)) {
+                (Ok(img), Ok(icon)) => {
+                    // `resize` keeps the aspect ratio: the wide logo stays whole
+                    let ui_img = img.resize(1152, 384, image::imageops::FilterType::Triangle).to_rgba8();
+                    let icon = icon.resize(64, 64, image::imageops::FilterType::Triangle).to_rgba8();
+                    let ci = egui::ColorImage::from_rgba_unmultiplied([ui_img.width() as usize, ui_img.height() as usize], ui_img.as_raw());
+                    let (w, h) = icon.dimensions();
+                    let _ = tx.send(LogoData {
+                        ui: ci,
+                        icon: Some((icon.into_raw(), w, h)),
+                    });
+                }
+                (Err(e), _) | (_, Err(e)) => log::warn!("logo decode failed: {e}"),
+            },
+        );
 
         let panels = Panels::from_settings(&settings);
         let appearance_ui = ui::appearance::AppearanceUi::restored(settings.appearance_tab);

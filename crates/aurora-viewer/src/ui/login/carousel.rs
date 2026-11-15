@@ -208,13 +208,26 @@ pub fn show(
                 .auto_shrink([false, true])
                 .show(ui, |ui| {
                     ui.vertical_centered(|ui| {
-                        if let Some(logo) = logo {
-                            ui.add(
-                                egui::Image::new(logo)
-                                    .fit_to_exact_size(Vec2::splat((if screen.height() < 800.0 { 32.0 } else { 64.0 }) * layout.scale)),
-                            );
+                        // HyperGrid Explorer: the approved horizontal logo
+                        // carries the name, fitted whole (contain)
+                        match logo {
+                            Some(logo) => {
+                                let side = if screen.height() < 800.0 { 32.0 } else { 64.0 };
+                                let room = Vec2::new(ui.available_width(), (side + 34.0) * layout.scale);
+                                // the logo melts into the sky on a pool of its own colour
+                                let pool = ui.painter().add(egui::Shape::Noop);
+                                let r = ui.add(egui::Image::new(logo).fit_to_exact_size(room)).rect;
+                                ui.painter().set(pool, crate::ui::aurora_bg::logo_pool_shape(r, r.height() * 0.45));
+                            }
+                            None => {
+                                ui.label(
+                                    RichText::new(aurora_version::brand::NAME)
+                                        .size(28.0 * layout.text_scale)
+                                        .strong()
+                                        .color(p.ink),
+                                );
+                            }
                         }
-                        ui.label(RichText::new("Aurora Viewer").size(28.0 * layout.text_scale).strong().color(p.ink));
                         ui.label(
                             RichText::new(crate::ui::login::client_tagline())
                                 .size(13.0 * layout.text_scale)

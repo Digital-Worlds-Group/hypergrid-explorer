@@ -512,7 +512,7 @@ impl App {
             },
             format,
         );
-        let tool = format!("Aurora Viewer {}", aurora_version::version());
+        let tool = format!("{} {}", aurora_version::brand::NAME, aurora_version::version());
         let author = Some(self.world.own_name())
             .filter(|n| !n.is_empty())
             .unwrap_or_else(|| "Unknown".into());

@@ -500,7 +500,9 @@ mod tests {
         ] {
             assert!(Source::test(address).is_none(), "{address}");
         }
-        assert!(crate::links::NEWS_FEED.starts_with(crate::links::RAW_FILES) && crate::links::NEWS_FEED.ends_with('/'));
+        // HyperGrid Explorer ships no feed yet (empty: nothing fetched)
+        let feed = crate::links::NEWS_FEED;
+        assert!(feed.is_empty() || (feed.starts_with(crate::links::RAW_FILES) && feed.ends_with('/')));
     }
 
     #[test]
