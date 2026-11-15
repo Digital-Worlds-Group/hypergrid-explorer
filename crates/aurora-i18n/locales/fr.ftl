@@ -440,7 +440,7 @@ login-accounts-count = { $count ->
     [one] { $count } compte enregistré
    *[other] { $count } comptes enregistrés
     }
-login-accounts-add = Ajouter un compte
+login-accounts-add = Ajouter un avatar
 login-accounts-manage = Gérer les comptes
 login-accounts-manager-description = Retrouvez les informations de connexion mémorisées pour chaque compte.
 login-accounts-reorder = Glissez les comptes pour changer leur ordre sur l’écran de connexion.

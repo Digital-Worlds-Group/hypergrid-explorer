@@ -440,7 +440,7 @@ login-accounts-count = { $count ->
     [one] 保存されたアカウント{ $count }件
    *[other] 保存されたアカウント{ $count }件
     }
-login-accounts-add = アカウントを追加
+login-accounts-add = アバターを追加
 login-accounts-manage = アカウントの管理
 login-accounts-manager-description = アカウントごとに記憶されているログイン情報を確認します。
 login-accounts-reorder = アカウントをドラッグして、ログイン画面での並び順を変更します。

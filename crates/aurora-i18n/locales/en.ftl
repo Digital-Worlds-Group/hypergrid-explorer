@@ -440,7 +440,7 @@ login-accounts-count = { $count ->
     [one] { $count } saved account
    *[other] { $count } saved accounts
     }
-login-accounts-add = Add an account
+login-accounts-add = Add an Avatar
 login-accounts-manage = Manage accounts
 login-accounts-manager-description = Review the login details remembered for each account.
 login-accounts-reorder = Drag accounts to change their order on the login screen.
