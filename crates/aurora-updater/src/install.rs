@@ -60,7 +60,7 @@ const ALLOWED: &[&str] = &[
     "NOTICE.md",
     "README.md",
     "version.txt",
-    "aurora-install.json",
+    "hypergrid-install.json",
 ];
 
 pub struct Workspace {

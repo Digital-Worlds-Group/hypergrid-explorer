@@ -108,7 +108,7 @@ On Linux the viewer checks the releases the same way, with the same policy
 "Open the release page" button leads to the archive, extracted by hand
 ([Installing on Linux](LINUX.md#updates)).
 
-`scripts/package.ps1` adds `aurora-install.json` (`schema: 1`, version read
+`scripts/package.ps1` adds `hypergrid-install.json` (`schema: 1`, version read
 by `--version`). The exe, the assets and the licence are mandatory in the
 package. The default thresholds come from `update-policy.json` at the root.
 `null` makes every update optional. Below a minimum version, the update is

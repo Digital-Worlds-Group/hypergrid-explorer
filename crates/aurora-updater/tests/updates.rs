@@ -128,7 +128,7 @@ fn valid_zip() -> Vec<u8> {
         ("Aurora-Viewer-v0.3.0-windows-x64/assets/character/avatar.llm", b"avatar"),
         ("Aurora-Viewer-v0.3.0-windows-x64/LICENSE", b"license"),
         (
-            "Aurora-Viewer-v0.3.0-windows-x64/aurora-install.json",
+            "Aurora-Viewer-v0.3.0-windows-x64/hypergrid-install.json",
             br#"{"schema":1,"version":"0.3.0"}"#,
         ),
     ])

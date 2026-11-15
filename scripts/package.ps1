@@ -50,6 +50,6 @@ $taskExePath = (Resolve-Path -LiteralPath $Exe).Path
 $taskVersion = (& $taskExePath --version | Out-String).Trim() -replace '^HyperGrid Explorer ', ''
 if ($LASTEXITCODE -ne 0 -or $taskVersion -notmatch '^\d+\.\d+\.\d+([+-][0-9A-Za-z.+-]+)?$') { throw 'Invalid package version.' }
 $taskJson = @{ schema = 1; version = $taskVersion } | ConvertTo-Json
-$taskMetadataPath = Join-Path (Resolve-Path -LiteralPath $Out -ErrorAction Stop).Path 'aurora-install.json'
+$taskMetadataPath = Join-Path (Resolve-Path -LiteralPath $Out -ErrorAction Stop).Path 'hypergrid-install.json'
 # Windows PowerShell 5.1 does not support Set-Content -Encoding utf8NoBOM.
 [IO.File]::WriteAllText($taskMetadataPath, $taskJson, [Text.UTF8Encoding]::new($false))
