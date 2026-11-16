@@ -441,7 +441,7 @@ login-accounts-count = { $count ->
    *[other] { $count } saved accounts
     }
 login-accounts-add = Add an Avatar
-login-accounts-manage = Manage accounts
+login-accounts-manage = Manage Avatars
 login-accounts-manager-description = Review the login details remembered for each account.
 login-accounts-reorder = Drag accounts to change their order on the login screen.
 login-accounts-reorder-failed = The account order could not be saved. Please try again.
