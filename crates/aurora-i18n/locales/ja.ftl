@@ -431,22 +431,22 @@ avatar-align-nearest-cardinal = 最も近い方位
 avatar-align-nearest-cardinal-tip = アバターを最も近い方角に向けて回転させます。
 avatar-align-face-nearest-tip = 最も近いアバターの方に向けます。
 login-accessibility = アクセシビリティ：インターフェースのサイズ、文字サイズ、コントラスト…（初期設定）
-login-accounts-title = アカウントを選択
-login-accounts-first-title = 最初のアカウントを追加
+login-accounts-title = アバターを選択
+login-accounts-first-title = 最初のアバターを追加
 login-accounts-last-place = 最後に訪れた場所
 login-accounts-place-after-visit = 初回の訪問後に利用できます
 login-accounts-count = { $count ->
-    [0] 保存されたアカウントはありません
-    [one] 保存されたアカウント{ $count }件
-   *[other] 保存されたアカウント{ $count }件
+    [0] 保存されたアバターはありません
+    [one] 保存されたアバター{ $count }件
+   *[other] 保存されたアバター{ $count }件
     }
 login-accounts-add = アバターを追加
 login-accounts-manage = アバターを管理
-login-accounts-manager-description = アカウントごとに記憶されているログイン情報を確認します。
-login-accounts-reorder = アカウントをドラッグして、ログイン画面での並び順を変更します。
-login-accounts-reorder-failed = アカウントの並び順を保存できませんでした。もう一度お試しください。
-login-accounts-search = アカウント、グリッド、開始地点で検索
-login-accounts-no-results = 一致するアカウントはありません
+login-accounts-manager-description = アバターごとに記憶されているログイン情報を確認します。
+login-accounts-reorder = アバターをドラッグして、ログイン画面での並び順を変更します。
+login-accounts-reorder-failed = アバターの並び順を保存できませんでした。もう一度お試しください。
+login-accounts-search = アバター、グリッド、開始地点で検索
+login-accounts-no-results = 一致するアバターはありません
 login-accounts-start-summary = 開始地点：{ $location }
 login-accounts-password-not-saved = パスワードは記憶されていません
 login-accounts-mfa-saved = 二段階認証：３０日間記憶
@@ -456,13 +456,13 @@ login-accounts-confirm-title = この操作の確認
 login-accounts-confirm-password = { $name }のために記憶されたパスワードを忘れますか？次回ログイン時に入力が必要になります。
 login-accounts-confirm-mfa = { $name }の３０日間の二段階認証を解除しますか？次回ログイン時に新しいコードが要求されます。
 login-accounts-confirm-remove = { $name }をこのビューアから削除し、保存されたパスワードと二段階認証を忘れますか？
-login-accounts-local-only = 変更はこのビューアに保存されたアカウントにのみ適用されます。
-login-accounts-remember-mfa = このコンピュータでこのアカウントを３０日間記憶する
+login-accounts-local-only = 変更はこのビューアに保存されたアバターにのみ適用されます。
+login-accounts-remember-mfa = このコンピュータでこのアバターを３０日間記憶する
 login-accounts-mfa-once = オフの場合：コードはこのログインでのみ使用されます。
 login-accounts-remembered = パスワードを記憶済み
 login-accounts-password-needed = パスワードを入力してください
 login-accounts-forget-password = パスワードを忘れる
-login-accounts-remove = アカウントを削除
+login-accounts-remove = アバターを削除
 login-accounts-confirm = これは{ $name }にのみ影響します。よろしいですか？
 
 import-title = アセットのインポート
@@ -2120,7 +2120,7 @@ grids-nickname = 短い名前
 grids-login = ログインＵＲＩ
 grids-gatekeeper = ハイパーグリッドのゲートキーパー
 grids-welcome = ウェルカムページ
-grids-register = アカウントを作成
+grids-register = アバターを作成
 grids-password = パスワードのリセット
 grids-help = ヘルプ
 grids-about = Webサイト
