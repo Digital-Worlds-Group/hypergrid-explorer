@@ -431,22 +431,22 @@ avatar-align-nearest-cardinal = To nearest cardinal
 avatar-align-nearest-cardinal-tip = Rotate your avatar towards nearest cardinal
 avatar-align-face-nearest-tip = Face towards the nearest avatar
 login-accessibility = Accessibility: interface size, text size, contrast… (Preferences)
-login-accounts-title = Choose your account
-login-accounts-first-title = Add your first account
+login-accounts-title = Choose your avatar
+login-accounts-first-title = Add your first avatar
 login-accounts-last-place = Last visited place
 login-accounts-place-after-visit = Available after your first visit
 login-accounts-count = { $count ->
-    [0] No saved accounts
-    [one] { $count } saved account
-   *[other] { $count } saved accounts
+    [0] No saved avatars
+    [one] { $count } saved avatar
+   *[other] { $count } saved avatars
     }
 login-accounts-add = Add an Avatar
 login-accounts-manage = Manage Avatars
-login-accounts-manager-description = Review the login details remembered for each account.
-login-accounts-reorder = Drag accounts to change their order on the login screen.
-login-accounts-reorder-failed = The account order could not be saved. Please try again.
-login-accounts-search = Search by account, grid or starting location
-login-accounts-no-results = No matching account
+login-accounts-manager-description = Review the login details remembered for each avatar.
+login-accounts-reorder = Drag avatars to change their order on the login screen.
+login-accounts-reorder-failed = The avatar order could not be saved. Please try again.
+login-accounts-search = Search by avatar, grid or starting location
+login-accounts-no-results = No matching avatar
 login-accounts-start-summary = Start: { $location }
 login-accounts-password-not-saved = Password not remembered
 login-accounts-mfa-saved = 2FA: remember for 30 days
@@ -456,13 +456,13 @@ login-accounts-confirm-title = Confirm this action
 login-accounts-confirm-password = Forget the password remembered for { $name }? It will need to be entered at the next login.
 login-accounts-confirm-mfa = Forget the 30-day 2FA authorization for { $name }? A new code will be requested at the next login.
 login-accounts-confirm-remove = Remove { $name } from this viewer and forget its saved password and 2FA authorization?
-login-accounts-local-only = Changes apply only to this viewer's saved accounts.
-login-accounts-remember-mfa = Remember this account on this computer for 30 days
+login-accounts-local-only = Changes apply only to this viewer's saved avatars.
+login-accounts-remember-mfa = Remember this avatar on this computer for 30 days
 login-accounts-mfa-once = Unchecked: the code is used for this login only.
 login-accounts-remembered = Password remembered
 login-accounts-password-needed = Enter your password
 login-accounts-forget-password = Forget password
-login-accounts-remove = Remove account
+login-accounts-remove = Remove avatar
 login-accounts-confirm = This affects only { $name }. Confirm?
 
 import-title = Import assets
@@ -2132,7 +2132,7 @@ grids-nickname = Short name
 grids-login = Login URI
 grids-gatekeeper = Hypergrid gatekeeper
 grids-welcome = Welcome page
-grids-register = Create an account
+grids-register = Create an avatar
 grids-password = Reset password
 grids-help = Help
 grids-about = Website
