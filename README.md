@@ -19,8 +19,9 @@ maintained by Terry Ford (terryf43080@outlook.com).
 
 | | |
 |---|---|
-| Forked from | Aurora Viewer **0.9.10-beta.20261115.1 + 17 commits** |
-| Aurora commit | [`03a8b9d15a7824ddd2bb22afeb26af28141eb36d`](https://github.com/Aurora-Viewer/Aurora-Viewer/commit/03a8b9d15a7824ddd2bb22afeb26af28141eb36d) (2026-11-15) |
+| Forked from | Aurora Viewer **0.9.11-beta.20261116.1 + 56 commits** |
+| Aurora commit | [`921c272da8b103487e92909bbc6531442e5d49b0`](https://github.com/Aurora-Viewer/Aurora-Viewer/commit/921c272da8b103487e92909bbc6531442e5d49b0) (2026-11-16) |
+| Source code | [github.com/Digital-Worlds-Group/hypergrid-explorer](https://github.com/Digital-Worlds-Group/hypergrid-explorer) |
 | Modified since | 2026-11-15 |
 | HyperGrid Explorer versions | Tags `hge-v<version>`, starting at 0.1.0 |
 | Licence | GNU GPL v3 or later, like Aurora Viewer ([LICENSE](LICENSE), [NOTICE.md](NOTICE.md)) |

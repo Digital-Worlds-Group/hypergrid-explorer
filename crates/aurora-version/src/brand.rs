@@ -19,11 +19,11 @@ pub const UPSTREAM: &str = "Aurora Viewer";
 /// The Aurora Viewer version HyperGrid Explorer was forked from (its
 /// `git describe` from Aurora's tags): shown in About, Preferences and the
 /// README. **Update these three together after each merge from upstream.**
-pub const UPSTREAM_VERSION: &str = "0.9.10-beta.20261115.1+17.g03a8b9d15";
+pub const UPSTREAM_VERSION: &str = "0.9.11-beta.20261116.1+56.g921c272da";
 /// That Aurora Viewer commit, in full.
-pub const UPSTREAM_COMMIT: &str = "03a8b9d15a7824ddd2bb22afeb26af28141eb36d";
+pub const UPSTREAM_COMMIT: &str = "921c272da8b103487e92909bbc6531442e5d49b0";
 /// That commit's date.
-pub const UPSTREAM_DATE: &str = "2026-11-15";
+pub const UPSTREAM_DATE: &str = "2026-11-16";
 /// Aurora Viewer's source repository.
 pub const UPSTREAM_SOURCE: &str = "https://github.com/Aurora-Viewer/Aurora-Viewer";
 

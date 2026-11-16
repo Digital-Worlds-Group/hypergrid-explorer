@@ -6,9 +6,8 @@
 /// (About › licence notices: "Source code").
 pub const GITHUB: &str = "https://github.com/Aurora-Viewer/Aurora-Viewer";
 /// HyperGrid Explorer's own source repository, for the login screen's GitHub
-/// button. Empty until the fork's public repository exists (the GPL asks to
-/// offer the modified source with the downloads).
-pub const SOURCE: &str = "";
+/// button: the GPL asks to offer the modified source with the downloads.
+pub const SOURCE: &str = "https://github.com/Digital-Worlds-Group/hypergrid-explorer";
 /// Issue template chooser, opened in the browser by "Report a bug" (login
 /// screen, top bar, Help menu) and by the crash window.
 /// HyperGrid Explorer: the website until the fork has its own tracker (never
